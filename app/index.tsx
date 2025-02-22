@@ -1,7 +1,12 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { Link } from 'expo-router';
+import * as React from 'react';
 
 import Button from '@/components/Button';
+import Logo from '@/components/logo';
+import HomeButton from "@/components/imagebutton";
+import SettingsButton from "@/components/settingswheel";
+import StatsButton from "@/components/statsbutton";
 
 export default function Index() {
   return (
@@ -9,6 +14,10 @@ export default function Index() {
       <Link href="http://localhost:8888">
         <Button theme="login-button" label="Login to Spotify" />
       </Link>
+      <Logo />
+      <HomeButton />
+      <SettingsButton />
+      <StatsButton />
     </View>
   );
 }
