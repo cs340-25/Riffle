@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { Link } from 'expo-router';
 
-export default function SecondScreen() {
+export default function StatsScreen() {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Welcome to the Home Screen!</Text>
+            <Text style={styles.text}>Welcome to the Stats Screen!</Text>
             <Link href="/">
                 <Button title="Go Back" />
             </Link>

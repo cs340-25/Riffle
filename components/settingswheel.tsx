@@ -1,17 +1,16 @@
 import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function SettingsButton() {
     return (
         <View style={styles.container}>
-            <Pressable
-                onPress={() => console.log("Pressed button (will add scene change)")}
-                style={({ pressed }) => {
-                    return { opacity: pressed ? 0.5 : 1 }
-                }}>
-                <Image source={require("../assets/images/settingswheel.png")}
-                    style={styles.image}
-                />
-            </Pressable>
+            <Link href="../settingsScreen">
+                <Pressable>
+                    <Image source={require("../assets/images/settingswheel.png")}
+                        style={styles.image}
+                    />
+                </Pressable>
+            </Link>
         </View >
     )
 }

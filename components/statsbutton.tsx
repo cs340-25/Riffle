@@ -1,17 +1,17 @@
 import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function StatsButton() {
     return (
         <View style={styles.container}>
-            <Pressable
-                onPress={() => console.log("Pressed button (will add scene change)")}
-                style={({ pressed }) => {
-                    return { opacity: pressed ? 0.5 : 1 }
-                }}>
-                <Image source={require("../assets/images/statsbutton.png")}
-                    style={styles.image}
-                />
-            </Pressable>
+            <Link href="/statsScreen">
+                <Pressable>
+                    <Image
+                        source={require("../assets/images/statsbutton.png")}
+                        style={styles.image}
+                    />
+                </Pressable>
+            </Link>
         </View >
     )
 }
