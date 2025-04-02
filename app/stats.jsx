@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
+import WebPlayback from './WebPlayback'
 
 export default function Stats () {
   const [profileData, setProfileData] = useState(null);
@@ -8,6 +10,19 @@ export default function Stats () {
 
    /* add call to refresh-token function */
 
+   async function getAccessToken(){
+      try{
+         const token = AsyncStorage.getItem('access_token');
+         return token;
+      }catch(err){
+         return null;
+       
+   
+
+
+   const formatNumberWithCommas = (number) => {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+   };
 
   useEffect(() => {
     fetchUserData();
@@ -36,52 +51,52 @@ export default function Stats () {
             {profileData && artistData && trackData && (
                <View style={styles.container}>
                   <Image source={{ uri: profileData['images'][0]['url'] }} style={{ width: profileData['images'][0]['width'], height: profileData['images'][0]['height'] }} />
-                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white' }}>{profileData['display_name']}</Text>
-                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white' }}>Top 5 Artists: </Text>
+                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>{profileData['display_name']}</Text>
+                  <Text style={{ fontSize: 30, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>Top 5 Artists: </Text>
                <View style={styles.artists}>
                   {artistData['items'].slice(0, 5).map((artist, index) => (
                      <View key={index} style={styles.artistContainer}>
                         <Image source={{ uri: artist['images'][2]['url'] }} style={{ width: artist['images'][2]['width'], height: artist['images'][2]['height'] }} />
-                        <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white' }}>
-                           #{index +1} {artist['name']}
+                        <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white', fontFamily: 'Lato-Bold' }}>
+                           {index +1}: {artist['name']}
                         </Text>
-                        <Text style={{ fontSize: 20, color: 'white' }}>
-                           Followers: {artist['followers']['total']}
+                        <Text style={{ fontSize: 20, color: 'white', fontFamily: 'Lato-Bold' }}>
+                           Followers: {formatNumberWithCommas(artist['followers']['total'])}
                         </Text>
                      </View>
                   
                   ))}
                </View>
-               <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white' }}>Top 5 Songs: </Text>
+               <Text style={{ fontSize: 30, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>Top 5 Songs: </Text>
                <View style={styles.tracks}>
                   {trackData['items'].slice(0, 5).map((track, index) => (
                         <View key={index} style={styles.trackContainer}>
                            <Image source={{ uri: track['album']['images'][1]['url'] }} style={{ width: 160, height: 160 }} />
-                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white' }}>
-                              #{index + 1} Song: {track['name']}
+                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white', fontFamily: 'Lato-Bold' }}>
+                              {index + 1}: {track['name']}
                            </Text>
-                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white' }}>
-                              Artist(s): {track['artists'][0]['name']}
+                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white', fontFamily: 'Lato-Bold' }}>
+                              Artist(s):
+                           <Text style={{ fontSize: 20, color: 'white', fontFamily: 'Lato-Bold' }}>
+                               {' '}{track['artists'][0]['name']}
+                           </Text>
                               {track['artists'].slice(1, track['artists'].length).map((artists, artistIndex) => (
                                  <View key={artistIndex}>
-                                    <Text style={{ fontSize: 20, color: 'white' }}>
+                                    <Text style={{ fontSize: 20, color: 'white', fontFamily: 'Lato-Bold' }}>
                                        , {artists['name']} 
                                     </Text>
                                  </View>
                               ))}
                            </Text>
-                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white' }}>
-                              Album: {track['album']['name']}
-                           </Text>
-                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white' }}>
+                           <Text style={{ fontSize: 20, paddingVertical: 10, color: 'white', fontFamily: 'Lato-Bold' }}>
                               Release Date: {track['album']['release_date']}
                            </Text>
                         </View>
                   ))}
                </View>
-                  {/* <Text>{JSON.stringify(profileData, null, 2)}</Text>
-                  <Text>{JSON.stringify(artistData, null, 2)}</Text>
-                  <Text style={{ color: 'white'}}>{JSON.stringify(trackData, null, 2)}</Text> */}
+                  {/* <Text>{JSON.stringify(profileData, null, 2)}</Text> */}
+                  {/* <Text>{JSON.stringify(artistData, null, 2)}</Text> */}
+                  {/* <Text style={{ color: 'white'}}>{JSON.stringify(trackData, null, 2)}</Text> */}
                </View>
             )}
          </View>
@@ -118,7 +133,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
-      marginTop: 20,
+      marginTop: 10,
       backgroundColor: '#1a1a1a',
    },
    artistContainer: {
