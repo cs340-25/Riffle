@@ -16,9 +16,10 @@ export default function Stats () {
          return token;
       }catch(err){
          return null;
-       
+      }
+   }
    
-
+   const token = getAccessToken();
 
    const formatNumberWithCommas = (number) => {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -48,6 +49,9 @@ export default function Stats () {
    return(
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#25292e', }}>
          <View style={styles.container}>
+            <View style={styles.playerContainer}>
+               <WebPlayback token={token}/>
+            </View>
             {profileData && artistData && trackData && (
                <View style={styles.container}>
                   <Image source={{ uri: profileData['images'][0]['url'] }} style={{ width: profileData['images'][0]['width'], height: profileData['images'][0]['height'] }} />
@@ -147,5 +151,11 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginBottom: 20,
       paddingHorizontal: 20,
-   }
+   },
+   playerContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 50,
+      height: 500,
+   },
 });
