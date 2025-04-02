@@ -49,13 +49,16 @@ export default function Stats () {
    return(
       <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#25292e', }}>
          <View style={styles.container}>
-            <View style={styles.playerContainer}>
+            {/* <View style={styles.playerContainer}>
                <WebPlayback token={token}/>
-            </View>
+            </View> */}
             {profileData && artistData && trackData && (
                <View style={styles.container}>
-                  <Image source={{ uri: profileData['images'][0]['url'] }} style={{ width: profileData['images'][0]['width'], height: profileData['images'][0]['height'] }} />
-                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>{profileData['display_name']}</Text>
+                  <Image source={{ uri: profileData['images'][0]['url'] }} style={{ width: 200, height: 200 }} />
+                  <Text style={{ fontSize: 40, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>{profileData['display_name']}</Text>
+               <View style={styles.playerContainer}>
+                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>WebPlayback PlaceHolder</Text>
+               </View>
                   <Text style={{ fontSize: 30, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold' }}>Top 5 Artists: </Text>
                <View style={styles.artists}>
                   {artistData['items'].slice(0, 5).map((artist, index) => (
@@ -98,6 +101,9 @@ export default function Stats () {
                         </View>
                   ))}
                </View>
+               <View style={styles.playListContainer}>
+                  <Text style={{ fontSize: 20, paddingVertical: 20, color: 'white', fontFamily: 'Lato-Bold'}}>Playlist Info PlaceHolder</Text>
+               </View>
                   {/* <Text>{JSON.stringify(profileData, null, 2)}</Text> */}
                   {/* <Text>{JSON.stringify(artistData, null, 2)}</Text> */}
                   {/* <Text style={{ color: 'white'}}>{JSON.stringify(trackData, null, 2)}</Text> */}
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
+      marginTop: 30,
       backgroundColor: '#25292e',
    },
    artists: {
@@ -153,9 +160,20 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
    },
    playerContainer: {
+      borderWidth: 5,
+      borderRadius: 10,
+      borderColor: '#0eaa45',
+      padding: 40,
       justifyContent: 'center',
       alignItems: 'center',
-      width: 50,
-      height: 500,
    },
+   playListContainer: {
+      borderWidth: 5,
+      borderRadius: 10,
+      borderColor: '#0eaa45',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 30,
+      padding: 40,
+   }
 });
