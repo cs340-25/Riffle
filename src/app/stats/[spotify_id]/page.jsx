@@ -507,7 +507,7 @@ export default function Stats() {
                   </>
                ) : (
                   <>
-                     <div className={styles.displayTitle}>
+                     {/* <div className={styles.displayTitle}>
                         <p className={styles.lifetimeTitle}>Top Artists</p>
                         <SortingDropdown
                            selectedMethod={sortMethod}
@@ -521,9 +521,9 @@ export default function Stats() {
                      {artistData && (
                         <div className={styles.cardContainer}>
                            {artistData?.items?.map((artist, index) => (
-                              <div key={`${artist.name}-${sortMethod}-${index}`} className={styles.cardItem}>
+                              <div key={`${artist.name}-${sortMethod}-${index}`} className={styles.cardItem}> */}
                                  {/* Artist Image */}
-                                 <Image 
+                                 {/* <Image 
                                     src={artist["images"][0]["url"]} 
                                     alt={artist["name"]} 
                                     width={160} 
@@ -534,9 +534,9 @@ export default function Stats() {
                                  <p className={styles.cardTitle}>
                                     {index + 1}. {artist["name"]}
                                  </p>
-                                 
+                                  */}
                                  {/* Artist Stats */}
-                                 <div className={styles.statsContainer}>
+                                 {/* <div className={styles.statsContainer}>
                                     <div className={styles.statItem}>
                                        <span>Plays: {artist?.stats?.listen_count}</span>
                                     </div>
@@ -557,7 +557,7 @@ export default function Stats() {
                         hasMore={hasMoreArtists}
                         onClick={handleLoadMoreArtists}
                      />
-                     )}
+                     )} */}
                      <div className={styles.displayTitle}>
                         <p className={styles.lifetimeTitle}>Top Tracks</p>
                         <SortingDropdown

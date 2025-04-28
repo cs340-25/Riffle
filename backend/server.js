@@ -89,7 +89,7 @@ async function getTrackData(trackIds, accessToken) {
 async function processArtistData(uniqueArtists, userId, accessToken) {
    console.log(`Processing ${uniqueArtists.size} unique artists...`);
    
-   const processedArtists = 0;
+   let processedArtists = 0;
    
    // Process in batches to avoid rate limiting
    const batchSize = 10;
@@ -100,28 +100,28 @@ async function processArtistData(uniqueArtists, userId, accessToken) {
      
      // Process each artist in the batch
      await Promise.all(batch.map(async (artistName) => {
-       try {
-         const artistImage = await getArtistImage(artistName, accessToken);
-         
-         // Create initial artist record
-         await upsertArtistInteraction({
-            userId,
-            artistName,
-            listenCount: 0,
-            skipCount: 0,
-            minutesListened: 0,
-            artistImage
-         });
-         
-         processedArtists++;
-         
-         // Delay to avoid rate limiting
-         if (processedArtists % 50 === 0) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+         try {
+            let artistImage = await getArtistImage(artistName, accessToken);
+            
+            // Create initial artist record
+            await upsertArtistInteraction({
+               userId,
+               artistName,
+               listenCount: 0,
+               skipCount: 0,
+               minutesListened: 0,
+               artistImage
+            });
+            
+            processedArtists++;
+            
+            // Delay to avoid rate limiting
+            if (processedArtists % 50 === 0) {
+               await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+         } catch (error) {
+            console.error(`Error processing artist ${artistName}:`, error);
          }
-      } catch (error) {
-         console.error(`Error processing artist ${artistName}:`, error);
-      }
       }));
    }
    
@@ -270,6 +270,7 @@ async function processImportInBackground(userId, files, accessToken) {
          });
       }, 2000);
 
+      processedEntries = 0;
       for await (const [groupKey, group] of trackInteractions) {
          try{
 
@@ -321,7 +322,8 @@ async function processImportInBackground(userId, files, accessToken) {
          
             // Update progress more frequently
             if( interactionCount % 100 === 0 || interactionCount === totalTracks ){
-               //console.log("Processed 100 tracks...");
+               processedEntries += 100;
+               console.log(`Processed ${processedEntries}/${totalTracks}`);
                sendProgressUpdate(connection, {
                   status: "processing",
                   progress: 35 + Math.round((interactionCount/totalTracks) * 50), // Up to 85
@@ -331,12 +333,16 @@ async function processImportInBackground(userId, files, accessToken) {
                });
             }
          } catch (error) {
-            console.error(`Error processing track ${trackId}:`, error);
+            console.error(`Error processing track interaction:`, error);
             // Continue with the next track instead of failing the entire import
             interactionCount++;
             continue;
          }
       }
+
+      console.log("Processing artist data...")
+      // Process artists to get images and create initial records
+      await processArtistData(uniqueArtists, userId, accessToken);
 
       // Calculate minutes listened for all processed tracks
       console.log("Calculating statistics for all tracks...");
@@ -924,6 +930,10 @@ app.post('/track-interaction/:userId/:trackId', async (req, res) => {
          skipThreshold,
          trackDuration
       );
+
+      const lengthListened = (playDuration/trackDuration) * 100;
+      const action = lengthListened <= skipThreshold ? 'skipped' : 'listened';
+      const minutesListened = playDuration / (1000 * 60); // Convert to minutes
 
       // Update artist interactions
       await updateArtistInteraction(userId, artistName, action === 'listened' ? 1 : 0, action === 'skipped' ? 1 : 0, minutesListened, token);
