@@ -205,7 +205,6 @@ async function processImportInBackground(userId, files, accessToken) {
       // Process all track interactions
       let interactionCount = 0;
       const totalTracks = trackInteractions.size;
-      const batchSize = 50; // Process in batches
       
       console.log("Processing track interactions...")
       setTimeout( () => {
@@ -216,6 +215,7 @@ async function processImportInBackground(userId, files, accessToken) {
          });
       }, 2000);
 
+      processedEntries = 0;
       for await (const [trackId, interactions] of trackInteractions) {
          try{
             const firstInteraction = interactions[0];
@@ -261,7 +261,8 @@ async function processImportInBackground(userId, files, accessToken) {
          
             // Update progress more frequently
             if( interactionCount % 100 === 0 || interactionCount === totalTracks ){
-               //console.log("Processed 100 tracks...");
+               processedEntries += 100;
+               console.log(`Processed ${processedEntries}/${totalTracks}`);
                sendProgressUpdate(connection, {
                   status: "processing",
                   progress: 35 + Math.round((interactionCount/totalTracks) * 50), // Up to 85
@@ -290,7 +291,7 @@ async function processImportInBackground(userId, files, accessToken) {
 
       let calculatedTracks = 0;
       const totalTrackIds = uniqueTrackIds.size;
-
+      let calcTracking = 0;
       for( const trackId of uniqueTrackIds ){
          try {
             await calculateMinutesListened(userId, trackId);
@@ -298,7 +299,8 @@ async function processImportInBackground(userId, files, accessToken) {
 
             // Update progress
             if( calculatedTracks % 100 === 0 || calculatedTracks === totalTrackIds ){
-               //console.log("Calculated 100 tracks...");
+               calcTracking += 100;
+               console.log(`Calculated ${calcTracking}/${totalTrackIds}`);
                sendProgressUpdate(connection, {
                   status: "processing",
                   progress: 85 + Math.round((calculatedTracks/totalTrackIds) * 10), // 10% for calculating
@@ -550,12 +552,12 @@ app.delete('/user/:userId', async (req, res) =>{
 app.put('/settings/:userId', async (req, res) => {
 
    const userId = req.params.userId;
-   const { skip_threshold, default_time_range, theme } = req.body;
+   const { skip_threshold, min_minutes_threshold, theme } = req.body;
 
    const udpateFields = {};
    //console.log(`The skip threshold received is ${skip_threshold}`);
    if( skip_threshold !== undefined ) udpateFields.skip_threshold = skip_threshold;
-   if( default_time_range !== undefined ) udpateFields.default_time_range = default_time_range;
+   if( min_minutes_threshold !== undefined ) udpateFields.min_minutes_threshold = min_minutes_threshold;
    if( theme !== undefined ) udpateFields.theme = theme;
 
    if( Object.keys(udpateFields).length === 0 ){

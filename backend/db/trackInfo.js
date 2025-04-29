@@ -15,7 +15,7 @@ async function upsertTrack(trackData){
          : defaultImagePath,
    };
    
-   console.log(`Created track record: ${JSON.stringify(trackRecord)}`);
+   // console.log(`Created track record: ${JSON.stringify(trackRecord)}`);
 
    // Use upsert to insert the track if it doesnt exist, or update if it already does. Using track_id as the key
    const { data, error } = await supabase
